@@ -1,3 +1,4 @@
+
 $FullName = Read-Host -Prompt 'Input the user name'
 $TwitterHandle = Read-Host -Prompt 'Input Twitter Handle'
 $CompanyName = Read-Host -Prompt 'Input Company Name'
@@ -5,19 +6,21 @@ $GoogleNewsURL='https://www.google.com/#q=' + $CompanyName + '&tbm=nws'
 $Email = Read-Host -Prompt 'Input Email Address'
 $Address = Read-Host -Prompt 'Input Physical Address'
 $SearchRadius = Read-Host -Prompt 'Input Search Radius in miles'
-
+$Date = Get-Date -format "yyyyMMdd"
+$FullNameMinusSpaces = $FullName -replace '\s','_' 
+$FileName= $Date + "_" + $FullNameMinusSpaces 
+$FormattedDate = Get-Date
 
 Import-Module .\Get-GeoCoding.ps1
 $env:GoogleGeoCode_API_Key = "AIzaSyCE7TjJT5VPxP5Z0YrtB8UoUJht7elj6vc"
 $GeoAddress=Get-GeoCoding -Address $Address
 
 
-
 if ($FullName) {[System.Diagnostics.Process]::Start('https://twitter.com/search?f=users&q=' + $FullName)}
 if ($TwitterHandle) {
 	[System.Diagnostics.Process]::Start('https://twitter.com/search?q=from%3A'+$TwitterHandle)
 	[System.Diagnostics.Process]::Start('https://twitter.com/search?q=to%3A'+$TwitterHandle)
-		    }
+	            }
 if ($CompanyName) {[System.Diagnostics.Process]::Start($GoogleNewsURL)
 		   [System.Diagnostics.Process]::Start('https://twitter.com/search?f=tweets&q=' + $CompanyName)
 	         	}
@@ -30,4 +33,24 @@ if ($CompanyName) {[System.Diagnostics.Process]::Start('https://www.linkedin.com
 if ($GeoAddress) {[System.Diagnostics.Process]::Start('https://twitter.com/search?f=tweets&q=geocode%3A' + $GeoAddress.Latitude + '%2C' + $GeoAddress.Longitude + '%2C' + $SearchRadius + 'mi&src=typd')}
 
 
+#Only for Testing.
+#Remove when ready for Prod
+remove-item "$FileName.htm"
 
+Add-Content "$FileName.htm" "<html>"
+Add-Content "$FileName.htm" "<head></head>"
+Add-Content "$FileName.htm" "<body bgcolor=black text=white>"
+Add-Content "$FileName.htm" "<h1>OSINT Report: $FullName</h1>"
+
+Add-Content "$FileName.htm" "Date Run:<br>"
+Add-Content "$FileName.htm" "$FormattedDate </br><br>"
+
+Add-Content "$FileName.htm" "Full Name:<br>"
+Add-Content "$FileName.htm" "$FullName </br><br>"
+
+if ($TwitterHandle) {
+Add-Content "$FileName.htm" "Twitter Handle:<br>"
+Add-Content "$FileName.htm" "<a href='https://twitter.com/$TwitterHandle'>$TwitterHandle</a> </br><br>"}
+
+Add-Content "$FileName.htm" "</body>"
+Add-Content "$FileName.htm" "</html>"

@@ -1,5 +1,5 @@
 ﻿<#
-.SYNOPSIS
+.SYNOPSIS 
     Returns geographic coordinates (Latitide and Longitude) for an Address.
 .DESCRIPTION
     This cmdlet utilizes Google Maps GeoCoding API, to convert addresses (like "1600 Amphitheatre Parkway, Mountain View, CA") into geographic coordinates (like latitude 37.423021 and longitude -122.083739)

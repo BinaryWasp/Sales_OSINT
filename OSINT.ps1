@@ -1,4 +1,4 @@
-
+param([string]$Export = "fuckyou")
 
 $FullName = Read-Host -Prompt 'Input the user name'
 $TwitterHandle = Read-Host -Prompt 'Input Twitter Handle'
@@ -22,13 +22,19 @@ Import-Module .\Get-GeoCoding.ps1
 $env:GoogleGeoCode_API_Key = "AIzaSyCE7TjJT5VPxP5Z0YrtB8UoUJht7elj6vc"
 if ($Address){$GeoAddress=Get-GeoCoding -Address $Address}
 
-#Only for Testing.
-#Remove when ready for Prod
-remove-item "$FileName.htm"
+
+$ChkFile = "$FileName.htm" 
+$FileExists = Test-Path $ChkFile 
+If ($FileExists -eq $True) 
+		{
+	remove-item "$FileName.htm"
+	Write-Host "Previous file exists. Removing"
+		}
+
 
 
 #Exporting Data to Screen
- if ($FullName) {
+ if ($Export -eq "HTML") {
                  [System.Diagnostics.Process]::Start("https://twitter.com/search?f=users&q=$FullName")
                  [System.Diagnostics.Process]::Start('https://www.facebook.com/search/str/'+ $FullName + '}/users-named')
                  [System.Diagnostics.Process]::Start('https://www.linkedin.com/search/results/people/?keywords=' +$FullName + '&origin=SWITCH_SEARCH_VERTICAL')
@@ -54,6 +60,7 @@ remove-item "$FileName.htm"
 
 
 #Exporting to HTML
+If ($Export -Match "HTML"){
 Add-Content "$FileName.htm" "<html>"
 Add-Content "$FileName.htm" "<head></head>"
 Add-Content "$FileName.htm" "<body bgcolor=white text=black>"
@@ -95,3 +102,4 @@ if ($CompanyName) {
 
 Add-Content "$FileName.htm" "</body>"
 Add-Content "$FileName.htm" "</html>"
+}
